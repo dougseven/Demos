@@ -7,8 +7,8 @@ var crypto = require('crypto');
 var namespace = 'dseven-photon-ns';
 var hubName = 'iotdemo';
 var deviceName = 'D7-Temp-Sensor';
-var keyValue = 'XvsIG1s7B51AxyuVhZ3AlYE/ZI1kN7usQZ9PmlLTmzg=';
-var keyName = 'Listen';
+var keyValue = 'f32B/fN46I62qnau0FavtWwsSIpnda5ib9oxuAdBPtY=';
+var keyName = 'Send';
 
 var publisherUri = 	'https://' + namespace +
  					'.servicebus.windows.net' + '/' + hubName + 
@@ -56,7 +56,7 @@ board.on("ready", function(){
       }
     };
     
-    console.log(options);
+    //console.log(options);
     
     // Create an HTTP request and a callback for error conditions
     var req = https.request(options);

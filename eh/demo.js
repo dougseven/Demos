@@ -1,4 +1,4 @@
-// Define the Jonny Five and Spark-IO variables
+// Define the Jonny Five variables
 var five = require ("johnny-five"),
     board, temperature;
 var https = require('https');

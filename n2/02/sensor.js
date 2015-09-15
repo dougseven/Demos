@@ -11,22 +11,21 @@ var Store = require("nitrogen-file-store"),
     service, lightSensor;
 
 var config = {
-    host: process.env.HOST_NAME || 'api.nitrogen.io',
-    http_port: process.env.PORT || 443,
-    protocol: process.env.PROTOCOL || 'https',
-    api_key: process.env.API_KEY || 'YOUR API KEY HERE'
+    host: process.env.HOST_NAME || '192.168.0.197',
+    http_port: process.env.PORT || 3030,
+    protocol: process.env.PROTOCOL || 'http',
+    api_key: process.env.NITROGEN_KEY || '95f9a680147f863d3ba60e7e32509fe2'
 };
 
-board = new five.Board();
+board = new five.Board({ port: "/dev/cu.usbmodem14111" });
 config.store = new Store(config);
 service = new nitrogen.Service(config);
 
-// Create a new Nitrogen device for the photoresistor
-// This device will send data it reads from a sensor
+// Create a new Nitrogen device
 lightSensor = new nitrogen.Device({
-    nickname: 'Sensor',
-    name: 'Sensor',
-    tags: ['sends:_environmentInfo']
+    nickname: 'D7-Environment-Sensor',
+    name: 'D7 Environment Sensor',
+    tags: ['sends:_ambientLight, temperature']
 });
 
 // Connect the lightSensor device defined above
@@ -59,7 +58,7 @@ service.connect(lightSensor, function(err, session, lightSensor) {
             
             // Create a Nitrogen Message to send the _lightLevel
             var ambientLightMessage = new nitrogen.Message({
-                type: '_environmentInfo',
+                type: '_ambientLight',
                 // Specify a command tag that you can scope to
                 // This will enable you to filter out non-relevant messages
                 tags: nitrogen.CommandManager.commandTag('n2demo_light'),

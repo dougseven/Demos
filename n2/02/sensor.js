@@ -23,8 +23,8 @@ service = new nitrogen.Service(config);
 
 // Create a new Nitrogen device
 lightSensor = new nitrogen.Device({
-    nickname: 'D7-Environment-Sensor',
-    name: 'D7 Environment Sensor',
+    nickname: 'Environment-Sensor',
+    name: 'Environment Sensor',
     tags: ['sends:_ambientLight, temperature']
 });
 
@@ -39,13 +39,13 @@ service.connect(lightSensor, function(err, session, lightSensor) {
         // Create a new `photoresistor` hardware instance.
         photoresistor = new five.Sensor({
             pin: 'A0',  // Analog pin 0
-            freq: 1000  // Collect data once per second
+            freq: 500  // Collect data once per half-second
         });
 
         temperature = new five.Temperature({
             controller: "TMP36",
-            pin: "A1",
-            freq: 500
+            pin: "A1", // Analog pin A1
+            freq: 2000 // Collect date once per 2-seconds
         });
         
         // Define the event handler for the photo resistor reading

@@ -34,8 +34,8 @@ service = new nitrogen.Service(config);
 
 // Create a new Nitrogen device
 indicatorLight = new nitrogen.Device({
-    nickname: 'D7-Indicator-Light',
-    name: 'D7 Indicator Light',
+    nickname: 'Indicator-Light',
+    name: 'Indicator Light',
     tags: ['sends:_color', 'executes:_ambientLight']
 });
 

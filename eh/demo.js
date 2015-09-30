@@ -6,7 +6,7 @@ var crypto = require('crypto');
 
 var namespace = 'dseven-photon-ns';
 var hubName = 'iotdemo';
-var deviceName = 'D7-Temp-Sensor';
+var deviceName = 'D7-Temp-Sensor-2';
 var keyValue = 'f32B/fN46I62qnau0FavtWwsSIpnda5ib9oxuAdBPtY=';
 var keyName = 'Send';
 

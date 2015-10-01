@@ -7,10 +7,15 @@ var five = require ("johnny-five");
 var Particle = require("particle-io");
 var device = require('azure-iot-device');
 
-// Set up the access credentials for Particle and Azure
-var particleKey = process.env.PARTICLE_KEY || 'YOUR PARTICLE ACCESS TOKEN HERE';
-var deviceName = process.env.PARTICLE_DEVICE || 'YOUR PARTICLE DEVICE ID/ALIAS HERE';
-var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
+var particleKey = process.env.PARTICLE_KEY || 'YOUR API KEY HERE';
+var deviceName = process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID';
+var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE CONNECTION STRING';
+
+var client = new device.Client(connectionString, new device.Https());
+
+console.log('particleKey: ' + particleKey);
+console.log('deviceName: ' + deviceName);
+console.log('connectionString: ' + connectionString);
 
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
@@ -20,33 +25,23 @@ var board = new five.Board({
   })
 });
 
-var client = new device.Client(connectionString, new device.Https());
-
 // The board.on() executes the anonymous function when the 
-// Partile Photon reports back that it is initialized and ready.
+// board reports back that it is initialized and ready.
 board.on("ready", function() {
     console.log("Board connected...");
     
-    var temperature= new five.Temperature({
-        controller: "TMP36",
+    // Create a new `photoresistor` hardware instance.
+    var photoresistor = new five.Sensor({
         pin: "A0",
-        freq: 5000 // Gather the temperature once per second
+        freq: 5000
     });
 
-    // The temperature.on function involes the ananymous callback
-    // function at the frequency specified above. The anonymous function
-    // is scoped to the data returned from the sensor (e.g. fahrenheit 
-    // or celsius temperatures). 
-    temperature.on("data", function() {
-        // Create a JSON payload for the message that will be sent to Azure IoT Hub
-        var payload = JSON.stringify({ deviceId: deviceName, temperature: this.C / 3 });
-        // Create the message based on the payload JSON
+    photoresistor.on("data", function() {
+        var payload = JSON.stringify({ deviceId: deviceName, ambientLight: this.value });
         var message = new device.Message(payload);
-        // Optionally you can add properties to the message
-        message.properties.add('celsius', this.C);
-        // For debugging purposes, write out the message paylod to the console
+    
         console.log("Sending message: " + message.getData());
-        // Send the message to Azure IoT Hub
+    
         client.sendEvent(message, printResultFor('send'));
     });
 });

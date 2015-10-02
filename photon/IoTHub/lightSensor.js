@@ -4,13 +4,15 @@
 'use strict';
 
 var five = require ("johnny-five");
-var Particle = require("particle-io");
 var device = require('azure-iot-device');
+var Particle = require("particle-io");
 
-// Set up the access credentials for Particle and Azure
 var particleKey = process.env.PARTICLE_KEY || 'YOUR PARTICLE ACCESS TOKEN HERE';
-var deviceName = process.env.PARTICLE_DEVICE || 'YOUR PARTICLE DEVICE ID/ALIAS HERE';
+var deviceName = process.env.DEVICE_NAME || 'YOUR PARTICLE PHOTON DEVICE ID/ALIAS HERE';
+var location = process.env.DEVICE_LOCATION || 'THE LOCATION OF THE PARTICLE PHOTON DEVICE';
 var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
+
+var client = new device.Client(connectionString, new device.Https());
 
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
@@ -20,30 +22,30 @@ var board = new five.Board({
   })
 });
 
-var client = new device.Client(connectionString, new device.Https());
-
 // The board.on() executes the anonymous function when the 
-// Partile Photon reports back that it is initialized and ready.
+// board reports back that it is initialized and ready.
 board.on("ready", function() {
     console.log("Board connected...");
-    
-    var temperature= new five.Temperature({
-        controller: "TMP36",
+        
+    // Create a new 'photoresistor' hardware instance.
+    var photoresistor = new five.Sensor({
         pin: "A0",
-        freq: 5000 // Gather the temperature once per second
+        freq: 10000 // Invoke the event handler for the temperature sensor once every 10-seconds
     });
-
-    // The temperature.on function involes the ananymous callback
-    // function at the frequency specified above. The anonymous function
-    // is scoped to the data returned from the sensor (e.g. fahrenheit 
-    // or celsius temperatures). 
-    temperature.on("data", function() {
-        // Create a JSON payload for the message that will be sent to Azure IoT Hub
-        var payload = JSON.stringify({ deviceId: deviceName, temperature: this.C / 3 });
+    
+    // The photoresistor.on() function invokes the ananymous callback function at the 
+    // frequency specified (25ms by default). The anonymous function is scoped
+    // to the object (e.g. this == the photoresistor object). 
+    photoresistor.on("data", function() {
+        var payload = JSON.stringify({ 
+            deviceType: 'lightSensor',
+            deviceId: deviceName, 
+            location: location,
+            ambientLight: this.value
+        });
+        
         // Create the message based on the payload JSON
         var message = new device.Message(payload);
-        // Optionally you can add properties to the message
-        message.properties.add('celsius', this.C);
         // For debugging purposes, write out the message paylod to the console
         console.log("Sending message: " + message.getData());
         // Send the message to Azure IoT Hub

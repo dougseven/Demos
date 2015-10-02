@@ -4,18 +4,15 @@
 'use strict';
 
 var five = require ("johnny-five");
-var Particle = require("particle-io");
 var device = require('azure-iot-device');
+var Particle = require("particle-io");
 
-var particleKey = process.env.PARTICLE_KEY || 'YOUR API KEY HERE';
-var deviceName = process.env.PARTICLE_DEVICE || 'YOUR DEVICE ID';
-var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE CONNECTION STRING';
+var particleKey = process.env.PARTICLE_KEY || 'YOUR PARTICLE ACCESS TOKEN HERE';
+var deviceName = process.env.DEVICE_NAME || 'YOUR PARTICLE PHOTON DEVICE ID/ALIAS HERE';
+var location = process.env.DEVICE_LOCATION || 'THE LOCATION OF THE PARTICLE PHOTON DEVICE';
+var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
 
 var client = new device.Client(connectionString, new device.Https());
-
-console.log('particleKey: ' + particleKey);
-console.log('deviceName: ' + deviceName);
-console.log('connectionString: ' + connectionString);
 
 // Define the Johnny Five board as your Particle Photon
 var board = new five.Board({
@@ -30,18 +27,30 @@ var board = new five.Board({
 board.on("ready", function() {
     console.log("Board connected...");
     
-    // Create a new `photoresistor` hardware instance.
-    var photoresistor = new five.Sensor({
-        pin: "A0",
-        freq: 5000
+    var temperature= new five.Temperature({
+        controller: "TMP36",
+        pin: "A1",
+        freq: 10000 // Invoke the event handler for the temperature sensor once every 10-seconds
     });
-
-    photoresistor.on("data", function() {
-        var payload = JSON.stringify({ deviceId: deviceName, ambientLight: this.value });
+    
+    // The temperature.on() function invokes the ananymous callback function at the 
+    // frequency specified (25ms by default). The anonymous function is scoped
+    // to the object (e.g. this == the temperature object). 
+    temperature.on("data", function() {
+        
+        // Create a JSON payload for the message that will be sent to Azure IoT Hub
+        var payload = JSON.stringify({ 
+            deviceType: 'temperature',
+            deviceId: deviceName, 
+            location: location, 
+            temperature: this.F 
+        });
+        
+        // Create the message based on the payload JSON
         var message = new device.Message(payload);
-    
+        // For debugging purposes, write out the message paylod to the console
         console.log("Sending message: " + message.getData());
-    
+        // Send the message to Azure IoT Hub
         client.sendEvent(message, printResultFor('send'));
     });
 });

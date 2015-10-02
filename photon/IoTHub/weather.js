@@ -30,27 +30,26 @@ var hF, hC, bF, bC, relativeHumidity, pressure;
 // board reports back that it is initialized and ready.
 board.on("ready", function() {
     console.log("Board connected...");
-    
-	// The SparkFun Weather Shield for the Particle Photon has two sensors on the I2C bus - 
-	// a humidity sensor (HTU21D) which can provide both humidity and temperature, and a 
-	// barometer (MPL3115A2) which can provide both barometric pressure and humidity.
-	// WHen you create objects for the sensors you use the PHOTON_WEATHER_SHILED controller
-    // which is a multi-class or IMU controller. Create objects for each data type you will use by specifying the controller which
-	// maps to the specific sensor.
-	var weather = new five.IMU({
-		controller: "PHOTON_WEATHER_SHIELD"
-	});
+    // The SparkFun Weather Shield for the Particle Photon has two sensors on the I2C bus - 
+    // a humidity sensor (HTU21D) which can provide both humidity and temperature, and a 
+    // barometer (MPL3115A2) which can provide both barometric pressure and humidity.
+    // WHen you create objects for the sensors you use the PHOTON_WEATHER_SHILED controller
+    // which is a multi-class or IMU controller. Create objects for each data type you will 
+    // use by specifying the controller which maps to the specific sensor.
+    var weather = new five.IMU({
+        controller: "PHOTON_WEATHER_SHIELD"
+    });
     
     // The temperature.on function invokes the ananymous callback function at the 
     // frequency specified (250ms by default). The anonymous function is scoped
     // to the object (e.g. this == temperature object). 
     weather.on("data", function() {
-		hF = this.hygrometer.temperature.fahrenheit;
-		hC = this.hygrometer.temperature.celsius;
+        hF = this.hygrometer.temperature.fahrenheit;
+        hC = this.hygrometer.temperature.celsius;
         relativeHumidity = this.hygrometer.relativeHumidity;
         
         bF = this.barometer.temperature.fahrenheit;
-		bC = this.barometer.temperature.celsius;
+        bC = this.barometer.temperature.celsius;
         pressure = this.barometer.pressure;
         
         // Create a JSON payload for the message that will be sent to Azure IoT Hub

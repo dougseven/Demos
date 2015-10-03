@@ -30,7 +30,7 @@ board.on("ready", function() {
     var temperature= new five.Temperature({
         controller: "TMP36",
         pin: "A1",
-        freq: 10000 // Invoke the event handler for the temperature sensor once every 10-seconds
+        freq: 30000 // Invoke the event handler for the temperature sensor once every 30-seconds
     });
     
     // The temperature.on() function invokes the ananymous callback function at the 
@@ -43,7 +43,7 @@ board.on("ready", function() {
             deviceType: 'temperature',
             deviceId: deviceName, 
             location: location, 
-            temperature: this.F 
+            value: this.F 
         });
         
         // Create the message based on the payload JSON

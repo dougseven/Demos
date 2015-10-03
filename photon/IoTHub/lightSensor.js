@@ -30,7 +30,7 @@ board.on("ready", function() {
     // Create a new 'photoresistor' hardware instance.
     var photoresistor = new five.Sensor({
         pin: "A0",
-        freq: 10000 // Invoke the event handler for the temperature sensor once every 10-seconds
+        freq: 30000 // Invoke the event handler for the temperature sensor once every 30-seconds
     });
     
     // The photoresistor.on() function invokes the ananymous callback function at the 
@@ -41,7 +41,7 @@ board.on("ready", function() {
             deviceType: 'lightSensor',
             deviceId: deviceName, 
             location: location,
-            ambientLight: this.value
+            value: this.value
         });
         
         // Create the message based on the payload JSON

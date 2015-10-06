@@ -27,3 +27,9 @@ build/Release
 node_modules
 
 n2/02/192.168.0.197_3030
+
+*.d7
+
+photon/IoTHub.zip
+
+photon/WeatherShield.zip

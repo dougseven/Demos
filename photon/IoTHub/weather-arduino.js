@@ -5,22 +5,15 @@
 
 var five = require ("johnny-five");
 var device = require('azure-iot-device');
-var Particle = require("particle-io");
 
-var particleKey = process.env.PARTICLE_KEY || 'YOUR PARTICLE ACCESS TOKEN HERE';
 var deviceName = process.env.DEVICE_NAME || 'YOUR PARTICLE PHOTON DEVICE ID/ALIAS HERE';
 var location = process.env.DEVICE_LOCATION || 'THE LOCATION OF THE PARTICLE PHOTON DEVICE';
 var connectionString = process.env.IOTHUB_CONN || 'YOUR IOT HUB DEVICE-SPECIFIC CONNECTION STRING HERE';
 
 var client = new device.Client(connectionString, new device.Https());
 
-// Create a Johnny Five board board instance to represent your Particle Photon
-var board = new five.Board({
-  io: new Particle({
-    token: particleKey,
-    deviceId: deviceName
-  })
-});
+// Create a Johnny Five board board instance to represent your Arduino
+var board = new five.Board();
 
 // hF, hC, bF, bC are holder variables for the fahrenheit and celsius values from the
 // hygrometer and barometer respectively.
@@ -42,7 +35,7 @@ board.on("ready", function() {
     
     // The hygrometer.on function invokes the ananymous callback function at the 
     // frequency specified in the constructor (25ms by default). The anonymous function 
-    // is scoped to the object (e.g. this == the hygrometer Multi class object). 
+    // is scoped to the object (e.g. this == the hygrometer Multi class object).
     hygrometer.on("data", function() {
         hF = this.temperature.fahrenheit;
         hC = this.temperature.celsius;

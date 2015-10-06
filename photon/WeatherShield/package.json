@@ -7,7 +7,6 @@
     "author": "Doug Seven.",
   "license": "MIT",
   "dependencies": {
-    "azure-iot-device": "^1.0.0-preview.3",
     "johnny-five": "^0.8.95",
     "particle-io": "^0.10.1"
   }

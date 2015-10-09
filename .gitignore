@@ -33,3 +33,7 @@ n2/02/192.168.0.197_3030
 photon/IoTHub.zip
 
 photon/WeatherShield.zip
+
+photon/WeatherShield/.vscode/launch.json
+
+photon/IoTHub/weather2.js

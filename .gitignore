@@ -37,3 +37,5 @@ photon/WeatherShield.zip
 photon/WeatherShield/.vscode/launch.json
 
 photon/IoTHub/weather2.js
+
+.DS_Store
